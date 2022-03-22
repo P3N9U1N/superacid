@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link rel="stylesheet" href="./site.css"/>
+    <link rel="icon" href="favicon.svg">
+    <template id="tmplXedit">  
+      <div class="xedit">     
+        <input type="number"  step="any" class="factor border" autocorrect="off"><span class="variablename"></span><sup class="exponent"></sup><span class="sign"></span>
+      </div>   
+    </template>
+    <template id="tmplXtext"> 
+       <span class="xtext">
+        <span class="sign"></span><span class="factor"></span><span class="variablename"></span><sup class="exponent"></sup>
+       </span>       
+    </template>
+    <template id="tmplFormula"> 
+        <span class="formula">        
+        </span>       
+     </template>
+    <template id="tmplEditRow"> 
+        <div class="editrowContainer">
+        </div>    
+    </template>
+    <template id="tmplDisplayRow">        
+        <tr class="displayrow">
+            <td ></td>
+            <td ></td>
+        </tr>
+    </template> 
+    <template id="tmplDisplaySolution">        
+            <span class="displaysolution">                           
+            </span>
+    </template>
+    <template id="tmplEditFunction">
+        <input type="text" autocorrect="off" spellcheck="false" class="function border">               
+        </input>
+    </template>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="" >Superacid</a>           
+        </nav>
+    </header>
+    <main>
+        <div id ="topContainer">
+            <div id="tableContainer">
+                <table id="table">
+                  <tbody>
+                  </tbody>
+                </table>            
+            </div>
+            
+           
+        </div>
+
+
+        <div class="controls">
+            <button id ="btnSolve">Solve</button>
+            <!--button id="btnDivide">Divide</button-->
+            <button id="btnPlot">Plot</button>
+            <button id ="btnRemove">-</button>
+            <button id="btnAdd">+</button>
+        </div>
+    </main>
+
+
+    </div>
+    <footer>
+        <div>
+        
+        </div>
+    </footer>   
+    <div id="plotOverlay">
+        <div id="plotOverlayContainer">
+            <div id="chart"></div>      
+             
+            <div class="functions">
+             
+           
+        
+            </div>
+            <div class="controls">
+                <button id ="btnClose">Close</button>
+                <button id ="btnRedraw">Redraw</button>   
+      
+            </div>   
+            </div>      
+        </div>    
+    </div>
+    <div id="divideOverlay"></div>
+    <script src="bundle.js"></script>
+</body>
+</html>

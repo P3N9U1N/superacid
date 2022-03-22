@@ -1,0 +1,313 @@
+﻿#table
+{  
+  border-collapse: collapse;
+  /*border-spacing: 2px;  */
+  width: 100%; 
+} 
+
+#table tr:nth-child(2n)  {
+  background-color: #E7E9EB;
+}
+
+#table td
+{
+  padding: 5px;
+  text-align: left;
+}
+
+#tableContainer
+{
+ overflow: auto;
+ flex:1;
+ min-height: 50px;
+} 
+#topContainer
+{
+ display: flex;
+ flex-direction: column;
+ flex: 1;
+ background-color: white;
+ border-color: lightslategray;
+ border: 4px;
+ border-style: solid;
+ border-top-color: #9a9a9a;
+ border-left-color: #9a9a9a;
+ border-right-color: #eeee;
+ border-bottom-color:#eeee;
+ min-height: 0px; /*allow container shrink*/
+} 
+
+main
+{
+ flex:1;
+ padding: 10px;
+ min-height: 0px;
+}
+
+main,body
+{
+ margin: 0;
+ display: flex;
+ flex-direction: column;
+ height: 100%;
+ box-sizing: border-box;
+}
+html
+{
+  margin: 0;
+  height: 100%;
+  box-sizing:border-box;
+  background-color:lightblue;
+  overflow:hidden;
+  font-family: sans-serif;
+}
+footer
+{
+  height:30px;
+  text-align: center;
+  flex-shrink:0;
+  display: none;
+}
+header>nav{
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  height: 50px;
+  background-color: aliceblue
+}
+header>nav>a{
+  text-decoration: none;
+  display: table-cell;
+  text-transform: uppercase;
+  text-align: center;
+  color: black;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+  line-height: 50px;
+  border-right-color: lightslategray;
+  border-bottom-color: lightslategray;
+  font-size: x-large;
+}
+header>nav>a:last-of-type{
+  border-right: 0px;
+}
+header>nav>a:hover{
+  text-decoration: underline;
+  background-color: lightslategray;
+  color: aliceblue;
+}
+
+.credits
+{
+  margin : 15px 0px 0px 0px;
+  text-align:center;
+}
+
+.border
+{
+  border: 2px solid #dadada;
+  border-radius: 4px; 
+}
+.border:focus
+{
+  outline: none;
+  border-color: #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+
+}
+.displayrow
+{
+ font-family: monospace;
+ font-size: medium;
+}
+.displayrow.seperator
+{
+ border-top: 1px dashed black;
+}
+.xedit,.xedit>.factor
+{
+ font-family: monospace;
+ font-size:x-large;
+}
+
+.xedit>input[type=number]
+{
+  -moz-appearance: textfield;
+}
+.xedit>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button
+{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.xedit>input {
+  width: 100px;
+  /*direction: rtl;*/
+}
+.xtext>.variablename
+{
+  margin: 0px 2px;
+}
+.editrowContainer
+{
+  display: grid;  
+  width: 100%;
+  justify-content: center;  
+  grid-template-columns: repeat(auto-fit,150px);
+  column-gap: 0px;
+  row-gap:8px;
+  overflow: auto;
+  margin: 8px 0px;
+}
+
+
+
+
+
+#btnRemove,#btnAdd
+{ 
+ float: left;
+ padding: 5px 0px;
+ width:40px;
+}
+
+.controls>button
+{
+ float:right;
+ margin: 5px 0px 0px 5px;
+ padding: 5px 14px;
+ font-size: large;
+ font-weight: bold;
+ font-size: large;
+}
+#btnRemove
+{
+ margin-left: 0px;
+ margin-right: 5px;
+}
+#btnAdd
+{ 
+  margin-left: 0px;
+}
+.xedit
+{
+ white-space: nowrap;
+}
+
+#plotOverlay
+{
+  position: fixed;
+  width:100%;
+  height: 100%;
+  background-color: white;
+  z-index: 1;
+  padding: 0px 0px 0px 0px;
+  visibility: hidden;
+  box-sizing:border-box;
+}
+#divideOverlay
+{
+  position: fixed;
+  width:100%;
+  height: 100%;
+  background-color: white;
+  z-index: 2;
+  margin: 52px 0px 0px 0px;
+  visibility: hidden;
+}
+#chart
+{  
+  flex: 1;
+  overflow:hidden;
+  text-align: center;
+}
+#plotOverlayContainer
+{
+  display: flex;
+  flex-direction: column;
+  height:100%;
+}
+.function-plot
+{
+ width:100%;
+ height: auto;
+}
+
+#plotOverlayContainer>.controls
+{
+  padding: 0px 10px 10px 10px;
+  background-color: lightblue;
+}
+.functions
+{
+  background-color: lightblue;
+  display: grid;
+  grid-template-columns: 65px auto;
+  padding: 10px;
+  gap: 5px 5px;
+  border-top: 4px solid #dadada;  
+}
+
+
+.function
+{
+  font-family: monospace;
+  font-size:x-large;
+}
+
+
+
+/*Slider https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: all .4s ease, visibility 0s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: all .4s ease, visibility 0s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+/* */
