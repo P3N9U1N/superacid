@@ -22,6 +22,7 @@ the derivative of degree 1 and works its way up to the target polynomial, findin
 
 # GUI
 There is a GUI for testing:
+https://p3n9u1n.github.io/superacid/gui/index.html
 
 The usage should be straightforward. There is a JSXGraph based plotter included, with following controls:
 * SHIFT+Drag mouse: move 
