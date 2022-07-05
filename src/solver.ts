@@ -334,6 +334,7 @@ export function solve(polynom:Decimal[],accuracy:Decimal=new Decimal(0.001), new
  return results;
 }
 
+//experimental root isolation (is not used)
 export function* isolateRoots(polynoms:Decimal[][],sortedDerivateZeros:Decimal[],accuracy:Decimal = new Decimal(0.001)):Generator<Interval>
 {
     var left,right;

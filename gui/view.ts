@@ -219,13 +219,13 @@ export class FactorEditView extends View<Decimal>
     getModel(): Decimal {
         var decimal:Decimal;
         try{
-         decimal= new Decimal(this.factor.value);
+         decimal= new Decimal(this.factor.value.trim());
         } catch(ex)
         {
           return new Decimal(0);
         }
         
-        return   decimal.isNaN() ? new Decimal(0):decimal;
+        return decimal.isNaN() ? new Decimal(0):decimal;
     }
 
     dispose(): void {

@@ -326,23 +326,30 @@ test("big numbers shared roots 5th degree", () => {
    
     for (var p of  generateUniqueTestData(a,5))
     {  
-      testSolver(p,new Decimal(1),50 );
+      testSolver(p, new Decimal("0.000000001"),120 );
     }
 
 });
 
+test("close zero test", () => { 
+    var polynom= solver.$(1,0,"0.000001"); 
+
+    var actual=solver.superacid(polynom,new Decimal("0.000001"),128)
+    expect(actual.length).toBe(0);
+});
+
 test("shared roots test", () => { 
     var a= [2,2,500,-300,0,-3,-3,0,-100,30,50,-60,0,-3,3]; 
-   
+    var accuracy = new Decimal("0.000000001");
     for (var p of  generateUniqueTestData(a,4))
     {  
-      testSolver(p, new Decimal(0.1),32,true);
+      testSolver(p, accuracy,100,true);
     }
-    testSolver([0,0],new Decimal(0.1),32);
-    testSolver([0,0,0],new Decimal(0.1),32);
-    testSolver([2,2,2],new Decimal(0.1),32);
-    testSolver([-5,-5,-5],new Decimal(0.1),32);
-    testSolver([-5,-5,-7],new Decimal(0.1),32);
+    testSolver([0,0],accuracy,100);
+    testSolver([0,0,0],accuracy,100);
+    testSolver([2,2,2],accuracy,100);
+    testSolver([-5,-5,-5],accuracy,100);
+    testSolver([-5,-5,-7],accuracy,100);
  
 });
 
@@ -378,7 +385,7 @@ test("Wilkinsons polynomial", () => {
        expected.push(new Decimal(c));
        w= solver.multiplicate(w,$(1,-c));
     }
-    var actual=sortArray(solver.superacid(w,new Decimal(0.001),20))
+    var actual=sortArray(solver.superacid(w,new Decimal("0.000001"),128))
     // console.log(actual);
     toBeClose(actual,expected);
 });
@@ -415,7 +422,7 @@ test("accuracy test1", () => {
     {  
      try {
          
-        testSolver(p,new Decimal(0.001),40,false);
+        testSolver(p,new Decimal("0.000000001"),100,false);
         success++;
      } catch (error) {
          fail++;
@@ -432,7 +439,7 @@ test("accuracyTest 2", () => {
     {  
      try {
          
-        testSolver(p,new Decimal(1),50,false);
+        testSolver(p,new Decimal("0.000000001"),100,false);
         success++;
      } catch (error) {
          fail++;
