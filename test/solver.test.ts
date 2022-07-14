@@ -288,7 +288,7 @@ test("big numbers 3th degree", () => {
    
     for (var p of  generateUniqueTestData(a,3))
     {  
-      testSolver(p,new Decimal(1),30);
+      testSolver(p,new Decimal(0.001),70);
     }
 
 });
@@ -297,7 +297,7 @@ test("medium numbers 4th degree", () => {
    
     for (var p of  generateUniqueTestData(a,4))
     {  
-      testSolver(p,new Decimal(1),30);
+      testSolver(p,new Decimal(1),70);
     }
 
 });
@@ -306,7 +306,7 @@ test("big numbers 4th degree", () => {
    
     for (var p of  generateUniqueTestData(a,4))
     {  
-      testSolver(p,new Decimal(1),50);
+      testSolver(p,new Decimal(1),70);
     }
 
 });
@@ -316,7 +316,7 @@ test("big numbers shared roots 4th degree", () => {
    
     for (var p of  generateUniqueTestData(a,4))
     {  
-      testSolver(p,new Decimal(1),50);
+      testSolver(p,new Decimal(1),70);
     }
 
 });
@@ -354,9 +354,8 @@ test("shared roots test", () => {
 });
 
 test("single test", () => { 
-  //  testSolver([12,15,16,17],new Decimal(0.1),32);
-   var p=solver.$(65,4,5,-4,4,-3)
-   var actual=solver.superacid(p )
+ testSolver([10,5,9,-2],new Decimal(0.01),96);
+
 
 });
 
@@ -385,7 +384,7 @@ test("Wilkinsons polynomial", () => {
        expected.push(new Decimal(c));
        w= solver.multiplicate(w,$(1,-c));
     }
-    var actual=sortArray(solver.superacid(w,new Decimal("0.000001"),128))
+    var actual=sortArray(solver.superacid(w,new Decimal("0.00001"),256))
     // console.log(actual);
     toBeClose(actual,expected);
 });
@@ -467,6 +466,15 @@ test("solve second degree", () => {
     expect(actual[1].zeros).toEqual($(-2));
     expect(actual[1].polynom).toEqual($(2,4));
  });
+
+ test("solve difficult polynom", () => { 
+  // -1*x^8 + 8*x^6 - (73/4)*x^4 + 18*x^2 - (3/4)
+  var actual=solver.superacid($(-1,0,8,0,-18.25,0,18 ,0,-0.75))
+  var expected= $(-2.261, -0.209, 0.209, 2.261);
+  toBeClose(actual,expected);
+ });
+
+
 
  test("toString", () => { 
      
@@ -619,5 +627,16 @@ test("solve second degree", () => {
     var intervals= Array.from(solver.isolateRoots(polynoms,solver.solve(p)[1].zeros));
     expect(intervals.length).toEqual(0);
 
+ 
+  });
+
+  test("bisect", () => { 
+    
+    var p= $(-2,1,3);
+    var actual=solver.bisect(p,new Decimal(0), new Decimal(-3),500, new Decimal("0.001"));
+    toBeCloseTo(actual, new Decimal(-1));
+
+    var actual=solver.bisect(p,new Decimal(1), new Decimal(3),500, new Decimal("0.001"));
+    toBeCloseTo(actual, new Decimal(1.5));
  
   });

@@ -64,7 +64,7 @@ function solve()
 {
     var m=  main.polynomeditview.getModel();
     var polynom= solver.$(...m);
-    var result=solver.solve(polynom, new solver.Decimal("0.000001"),128);  
+    var result=solver.solve(polynom, new solver.Decimal("0.00001"),256);  
     if (result==null) return;
     var derivations=solver.calculateDerivates(polynom);
     derivations.unshift(polynom);

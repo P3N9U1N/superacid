@@ -29,60 +29,20 @@ export function* getIntervalsInPolynom( ...sortedDerivateZeros:Decimal[]):Genera
     yield  {left:right,right:positiveInfinity,start:right.add(one)} ;    
 }
 
-export function superacid(polynom:Decimal[],accuracy:Decimal=new Decimal(0.01), newtonIterations:number=32):Decimal[]
+export function superacid(polynom:Decimal[],accuracy:Decimal=new Decimal("0.00001"), iterations:number=96):Decimal[]
 {
- /*
-  Simplify polynomial by dividing through the first coefficient.
-  Smaller coefficients mean less chance of overflowing.
- */
- polynom=simplyfyPolynom(polynom); 
- var degree = polynom.length-1;
- if (degree<=0) return null;
- var polynoms=calculateDerivates(polynom); //calculate all derivatives
- /*
-   Add polynomial to the list of polynomials, whose roots need to be calculated
- */
- polynoms.unshift(polynom); 
- var c= degree;
- var firstDegreeDerivation=polynoms[polynoms.length-2];
- var derivateZeros:Decimal[]=[firstDegreeDerivation[1].neg().div(firstDegreeDerivation[0])];
- var roots = derivateZeros;
- /*
-  Calculate roots of polynomial and all its derivates, starting with lowest degree.
-  Roots are needed for calculating the roots of the polynom with the next degree.  
- */
- while (--c) 
- { 
-    var fx= polynoms[c-1];
-    var fxx= polynoms[c];
-    roots=[];
-    /*
-      Intervals are located from -infinity to the first stationary point, in between neigbouring
-      stationary points, and from the last stationary point to +infinity. Because of that, the zeros
-      of the derivate are needed, calculated in the last loop iteration.
-      In each interval there is at most one zero, because the sign of the derivative is constant.
-    */  
-    var intervals= getIntervalsInPolynom(...derivateZeros); 
-    for( var interval of intervals)
-    {  //Do Newton iterations seperately for each interval
-       var root=newtonIterate(fx,fxx,interval.left,interval.right,interval.start,newtonIterations,accuracy); 
-       if (root==null) continue;   
-       //skip next interval, because root will be the same as in the current interval  
-       if (interval.right.minus(root).abs().lessThan(accuracy)) intervals.next(); 
-       roots.push(root); //Add root to the list of found roots   
-    }
-    derivateZeros=roots; //Roots are needed for calculating the next intervals   
- }
- return roots; // return found roots
+  var result= solve(polynom,accuracy,iterations);
+  if (result.length==0) return [];
+  return result[0].zeros;
 }
 
 export function newtonIterate(polynom:Decimal[],derivate:Decimal[],
     left:Decimal,right:Decimal,start:Decimal,
-    newtonIterations:number,accuracy:Decimal):Decimal
+    iterations:number,accuracy:Decimal):Decimal
 {
  var degree = polynom.length-1;
  if (degree<=0 || derivate.length != polynom.length-1) return null;
- if (newtonIterations<0) return null;
+ if (iterations<0) return null;
  var c=0;
  var x=null;
  var fx=positiveInfinity;
@@ -102,12 +62,43 @@ export function newtonIterate(polynom:Decimal[],derivate:Decimal[],
     fx= nextFx;
     x=start; 
     if (fx.isZero() || 
-       c>=newtonIterations ||
+       c>=iterations ||
        (fxx= calculate(derivate,x)).isZero()) break;
     var start=start.sub(fx.div(fxx));
     c++;    
  }
  return fx.abs().lessThan(accuracy) ? x: null;
+}
+
+export function bisect(polynom:Decimal[],
+  positiveEndpoint:Decimal,negativeEndpoint:Decimal,
+  iterations:number,accuracy:Decimal):Decimal
+{
+  var degree = polynom.length-1;
+  if (degree<=0) return null;
+  //var fxPositive=calculate(polynom,positiveEndpoint);
+  //var fxNegative=calculate(polynom,negativeEndpoint);
+  var oldmiddle=positiveInfinity;
+  for (var c=0;c< iterations;c++)
+  {
+    var middle=positiveEndpoint.add(negativeEndpoint).div(two);
+    if (middle.equals(oldmiddle))
+    {
+       break;
+    }
+
+    var fxmiddle=calculate(polynom,middle);
+    if (fxmiddle.abs().lessThan(accuracy)) return middle;
+    if (fxmiddle.isPositive())
+    {
+     positiveEndpoint=middle;
+    } else
+    {
+     negativeEndpoint=middle;
+    }
+    oldmiddle=middle;
+  }
+  return fxmiddle.abs().lessThan(accuracy)? middle:null;
 }
 
 export function calculateDerivates(polynom:Decimal[])
@@ -303,35 +294,91 @@ export function toString(polynom:Decimal[],decimalPlaces:0|1|2|3|4|5|6|7|8|9)
 }
 
 type RootFindingResult={polynom:Decimal[],zeros:Decimal[]} 
-export function solve(polynom:Decimal[],accuracy:Decimal=new Decimal(0.001), newtonIterations:number=64):RootFindingResult[]
+export function solve(polynom:Decimal[],accuracy:Decimal=new Decimal(0.001), iterations:number=64):RootFindingResult[]
 {
- polynom=simplyfyPolynom(polynom);
- var degree = polynom.length-1;
- if (degree<=0) return null;
- var polynoms=calculateDerivates(polynom);
- polynoms.unshift(polynom);
- var c= degree;
- var firstDegreeDerivation=polynoms[polynoms.length-2];
- var derivateZeros:Decimal[]=[firstDegreeDerivation[1].neg().div(firstDegreeDerivation[0])];
- var results:RootFindingResult[]=[];
- results.unshift({polynom:firstDegreeDerivation,zeros:derivateZeros})
- while (--c)
- { 
-    var fx= polynoms[c-1];
-    var fxx= polynoms[c];
-    var roots:Decimal[]=[];   
-    var intervals= getIntervalsInPolynom(...derivateZeros)
-    for( var interval of intervals)
-    {       
-       var root=newtonIterate(fx,fxx,interval.left,interval.right,interval.start,newtonIterations,accuracy);
-       if (root==null) continue;
-       if (interval.right.minus(root).abs().lessThan(accuracy)) intervals.next();
-       roots.push(root);
-    }
-    results.unshift({polynom:fx,zeros:roots})
-    derivateZeros=roots;    
- }
- return results;
+ /*
+  Simplify polynomial by dividing through the first coefficient.
+  Smaller coefficients mean less chance of overflowing.
+ */
+  polynom=simplyfyPolynom(polynom); 
+  var degree = polynom.length-1;
+  if (degree<=0) return null;
+  var polynoms=calculateDerivates(polynom); //calculate all derivatives
+  /*
+    Add polynomial to the list of polynomials, whose roots need to be calculated
+  */
+  polynoms.unshift(polynom); 
+  var c= degree;
+  var firstDegreeDerivation=polynoms[polynoms.length-2];
+  var derivateZeros:Decimal[]=[firstDegreeDerivation[1].neg().div(firstDegreeDerivation[0])];
+  var results:RootFindingResult[]=[];
+  results.unshift({polynom:firstDegreeDerivation,zeros:derivateZeros})
+  /*
+   Calculate roots of polynomial and all its derivates, starting with lowest degree.
+   Roots are needed for calculating the roots of the polynom with the next degree.  
+  */
+  while (--c) 
+  { 
+     var fx= polynoms[c-1];
+     var fxx= polynoms[c];
+     var roots:Decimal[]=[];  
+     /*
+       Intervals are located from -infinity to the first stationary point, in between neigbouring
+       stationary points, and from the last stationary point to +infinity. Because of that, the zeros
+       of the derivate are needed, calculated in the last loop iteration.
+       In each interval there is at most one zero, because the sign of the derivative is constant.
+     */  
+     var intervals= getIntervalsInPolynom(...derivateZeros); 
+     for( var interval of intervals)
+     { 
+        var root=null;
+        var fxLeft=null,fxRight=null;
+       
+        var leftestInterval= interval.left.equals(negativeInfinity);
+        var rightestInterval = interval.right.equals(positiveInfinity);
+        if (leftestInterval || 
+           rightestInterval)
+        {
+         //Choose Newton method
+         root=newtonIterate(fx,fxx,interval.left,interval.right,interval.start,iterations,accuracy); 
+        } else
+        {
+           fxLeft= fxRight ?? calculate(fx,interval.left);
+           fxRight=calculate(fx,interval.right);
+           if (fxLeft.abs().lessThan(accuracy) ||
+               fxRight.abs().lessThan(accuracy))
+           {
+             //Choose Newton method
+             root=newtonIterate(fx,fxx,interval.left,interval.right,interval.start,iterations,accuracy); 
+           } else
+           {
+             //Choose bisecting
+             var fxLeftPositive=fxLeft.isPositive();
+             if(fxLeftPositive!=fxRight.isPositive())
+             {
+               var positiveEndpoint,negativeEndpoint;
+               if (fxLeftPositive)
+               {
+                 positiveEndpoint=interval.left;
+                 negativeEndpoint=interval.right;
+               } else
+               {
+                 positiveEndpoint=interval.right;
+                 negativeEndpoint=interval.left;
+               }
+               root=bisect(fx,positiveEndpoint,negativeEndpoint,iterations,accuracy);
+             }
+           }                
+        }      
+        if (root==null) continue;   
+        //skip next interval, because root will be the same as in the current interval  
+        if (interval.right.minus(root).abs().lessThan(accuracy)) intervals.next(); 
+        roots.push(root); //Add root to the list of found roots   
+     }
+     results.unshift({polynom:fx,zeros:roots})
+     derivateZeros=roots;    
+  }
+  return results; // return found roots
 }
 
 //experimental root isolation (is not used)
